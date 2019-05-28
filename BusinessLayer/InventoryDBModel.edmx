@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="InventorydbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Assets">
+          <Key>
+            <PropertyRef Name="Asset_id" />
+          </Key>
+          <Property Name="Asset_id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Asset_name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="asset_type" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="asset_status" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Asset_description" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reservations">
+          <Key>
+            <PropertyRef Name="Reservation_id" />
+          </Key>
+          <Property Name="Reservation_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Reservation_start" Type="datetime" Nullable="false" />
+          <Property Name="Reservation_end" Type="datetime" Nullable="false" />
+          <Property Name="Asset_AssetId" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="User_id" />
+          </Key>
+          <Property Name="User_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="User_firstname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="User_lastname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="User_password" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Reservations_Assets">
+          <End Role="Assets" Type="Self.Assets" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Reservations" Type="Self.Reservations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assets">
+              <PropertyRef Name="Asset_id" />
+            </Principal>
+            <Dependent Role="Reservations">
+              <PropertyRef Name="Asset_AssetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InventorydbModelStoreContainer">
+          <EntitySet Name="Assets" EntityType="Self.Assets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reservations" EntityType="Self.Reservations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Reservations_Assets" Association="Self.FK_Reservations_Assets">
+            <End Role="Assets" EntitySet="Assets" />
+            <End Role="Reservations" EntitySet="Reservations" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InventorydbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="InventorydbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Assets" EntityType="InventorydbModel.Asset" />
+          <EntitySet Name="Reservations" EntityType="InventorydbModel.Reservation" />
+          <EntitySet Name="Users" EntityType="InventorydbModel.User" />
+          <AssociationSet Name="FK_Reservations_Assets" Association="InventorydbModel.FK_Reservations_Assets">
+            <End Role="Asset" EntitySet="Assets" />
+            <End Role="Reservation" EntitySet="Reservations" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Asset">
+          <Key>
+            <PropertyRef Name="Asset_id" />
+          </Key>
+          <Property Name="Asset_id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Asset_name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="asset_type" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="asset_status" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Asset_description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Reservations" Relationship="InventorydbModel.FK_Reservations_Assets" FromRole="Asset" ToRole="Reservation" />
+        </EntityType>
+        <EntityType Name="Reservation">
+          <Key>
+            <PropertyRef Name="Reservation_id" />
+          </Key>
+          <Property Name="Reservation_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Reservation_start" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Reservation_end" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Asset_AssetId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Asset" Relationship="InventorydbModel.FK_Reservations_Assets" FromRole="Reservation" ToRole="Asset" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="User_id" />
+          </Key>
+          <Property Name="User_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="User_firstname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="User_lastname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="User_password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_Reservations_Assets">
+          <End Type="InventorydbModel.Asset" Role="Asset" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="InventorydbModel.Reservation" Role="Reservation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asset">
+              <PropertyRef Name="Asset_id" />
+            </Principal>
+            <Dependent Role="Reservation">
+              <PropertyRef Name="Asset_AssetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="InventorydbModelStoreContainer" CdmEntityContainer="InventorydbEntities">
+          <EntitySetMapping Name="Assets">
+            <EntityTypeMapping TypeName="InventorydbModel.Asset">
+              <MappingFragment StoreEntitySet="Assets">
+                <ScalarProperty Name="Asset_description" ColumnName="Asset_description" />
+                <ScalarProperty Name="asset_status" ColumnName="asset_status" />
+                <ScalarProperty Name="asset_type" ColumnName="asset_type" />
+                <ScalarProperty Name="Asset_name" ColumnName="Asset_name" />
+                <ScalarProperty Name="Asset_id" ColumnName="Asset_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reservations">
+            <EntityTypeMapping TypeName="InventorydbModel.Reservation">
+              <MappingFragment StoreEntitySet="Reservations">
+                <ScalarProperty Name="Asset_AssetId" ColumnName="Asset_AssetId" />
+                <ScalarProperty Name="Reservation_end" ColumnName="Reservation_end" />
+                <ScalarProperty Name="Reservation_start" ColumnName="Reservation_start" />
+                <ScalarProperty Name="Reservation_id" ColumnName="Reservation_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="InventorydbModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="User_password" ColumnName="User_password" />
+                <ScalarProperty Name="User_lastname" ColumnName="User_lastname" />
+                <ScalarProperty Name="User_firstname" ColumnName="User_firstname" />
+                <ScalarProperty Name="User_username" ColumnName="User_username" />
+                <ScalarProperty Name="User_id" ColumnName="User_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram DiagramId="b158d4e6a0e24e12a3f9126fd49de081" Name="Diagram1">
+        <EntityTypeShape EntityType="InventorydbModel.Asset" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="InventorydbModel.Reservation" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="InventorydbModel.User" Width="1.5" PointX="1.75" PointY="3.5" IsExpanded="true" />
+        <AssociationConnector Association="InventorydbModel.FK_Reservations_Assets" ManuallyRouted="false" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
